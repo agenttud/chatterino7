@@ -101,7 +101,7 @@ void AB_THEME_CLASS::actuallyUpdate(double hue, double multiplier)
                 {QColor("#fff"), QColor("#eee"), QColor("#fff")},
                 {highlighted, highlighted, highlighted}};
             this->tabs.selected = {
-                QColor("#fff"),
+                QColor("#000"),
                 {QColor("#b4d7ff"), QColor("#b4d7ff"), QColor("#b4d7ff")},
                 {this->accent, this->accent, this->accent}};
         }
@@ -120,7 +120,7 @@ void AB_THEME_CLASS::actuallyUpdate(double hue, double multiplier)
                 {QColor("#3f72bf"), QColor("#3f72bf"), QColor("#3f72bf")},
                 {QColor("#3f72bf"), QColor("#3f72bf"), QColor("#3f72bf")}};
             this->tabs.selected = {
-                QColor("#000"),
+                QColor("#fff"),
                 {QColor("#3f72bf"), QColor("#3f72bf"), QColor("#3f72bf")},
                 {QColor("#3f72bf"), QColor("#3f72bf"), QColor("#3f72bf")}};
         }
