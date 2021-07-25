@@ -97,14 +97,22 @@ enum class MessageElementFlag : int64_t {
     // - Chatterino gnome badge
     BadgeChatterino = (1LL << 18),
 
-    // Slot 7: FrankerFaceZ
+    // Slot 7: Seventv
+    // - Seventv Admin
+    // - Seventv Dungeon Mistress
+    // - Seventv Moderator
+    // - Seventv Subscriber
+    BadgeSeventv = (1LL << 40),
+
+    // Slot 8: FrankerFaceZ
     // - FFZ developer badge
     // - FFZ bot badge
     // - FFZ donator badge
     BadgeFfz = (1LL << 19),
 
     Badges = BadgeGlobalAuthority | BadgePredictions | BadgeChannelAuthority |
-             BadgeSubscription | BadgeVanity | BadgeChatterino | BadgeFfz,
+             BadgeSubscription | BadgeVanity | BadgeChatterino | BadgeSeventv |
+             BadgeFfz,
 
     ChannelName = (1LL << 20),
 

@@ -37,6 +37,7 @@
 #include "singletons/WindowManager.hpp"
 #include "util/Clipboard.hpp"
 #include "util/DistanceBetweenPoints.hpp"
+#include "util/Helpers.hpp"
 #include "util/IncognitoBrowser.hpp"
 #include "util/StreamerMode.hpp"
 #include "util/Twitch.hpp"
@@ -48,6 +49,7 @@
 #include "widgets/helper/EffectLabel.hpp"
 #include "widgets/helper/SearchPopup.hpp"
 #include "widgets/splits/Split.hpp"
+#include "widgets/splits/SplitInput.hpp"
 
 #define DRAW_WIDTH (this->width())
 #define SELECTION_RESUME_SCROLLING_MSG_THRESHOLD 3
@@ -1626,7 +1628,7 @@ void ChannelView::mousePressEvent(QMouseEvent *event)
                          hoverLayoutElement->getFlags().has(
                              MessageElementFlag::Username))
                     break;
-                else
+                else if (this->scrollBar_->isVisible())
                     this->enableScrolling(event->screenPos());
             }
         }
@@ -1700,7 +1702,7 @@ void ChannelView::mouseReleaseEvent(QMouseEvent *event)
     }
     else if (event->button() == Qt::MiddleButton)
     {
-        if (this->isScrolling_)
+        if (this->isScrolling_ && this->scrollBar_->isVisible())
         {
             if (event->screenPos() == this->lastMiddlePressPosition_)
                 this->enableScrolling(event->screenPos());
@@ -1808,8 +1810,9 @@ void ChannelView::handleMouseClick(QMouseEvent *event,
         }
         break;
         case Qt::RightButton: {
+            auto split = dynamic_cast<Split *>(this->parentWidget());
             auto insertText = [=](QString text) {
-                if (auto split = dynamic_cast<Split *>(this->parentWidget()))
+                if (split)
                 {
                     split->insertTextToInput(text);
                 }
@@ -1819,7 +1822,11 @@ void ChannelView::handleMouseClick(QMouseEvent *event,
             if (link.type == Link::UserInfo)
             {
                 const bool commaMention = getSettings()->mentionUsersWithComma;
-                insertText("@" + link.value + (commaMention ? ", " : " "));
+                const bool isFirstWord =
+                    split && split->getInput().isEditFirstWord();
+                auto userMention =
+                    formatUserMention(link.value, isFirstWord, commaMention);
+                insertText("@" + userMention + " ");
             }
             else if (link.type == Link::UserWhisper)
             {
@@ -1928,7 +1935,7 @@ void ChannelView::addContextMenuItems(
         crossPlatformCopy(copyString);
     });
 
-    // Open in new split.
+    // If is a link to a twitch user/stream
     if (hoveredElement->getLink().type == Link::Url)
     {
         static QRegularExpression twitchChannelRegex(
@@ -1947,7 +1954,22 @@ void ChannelView::addContextMenuItems(
         {
             menu->addSeparator();
             menu->addAction("Open in new split", [twitchUsername, this] {
-                this->joinToChannel.invoke(twitchUsername);
+                this->openChannelIn.invoke(twitchUsername,
+                                           FromTwitchLinkOpenChannelIn::Split);
+            });
+            menu->addAction("Open in new tab", [twitchUsername, this] {
+                this->openChannelIn.invoke(twitchUsername,
+                                           FromTwitchLinkOpenChannelIn::Tab);
+            });
+
+            menu->addSeparator();
+            menu->addAction("Open player in browser", [twitchUsername, this] {
+                this->openChannelIn.invoke(
+                    twitchUsername, FromTwitchLinkOpenChannelIn::BrowserPlayer);
+            });
+            menu->addAction("Open in streamlink", [twitchUsername, this] {
+                this->openChannelIn.invoke(
+                    twitchUsername, FromTwitchLinkOpenChannelIn::Streamlink);
             });
         }
     }

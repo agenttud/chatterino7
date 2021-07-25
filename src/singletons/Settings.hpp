@@ -142,6 +142,7 @@ public:
                                           true};
     BoolSetting showBadgesVanity = {"/appearance/badges/vanity", true};
     BoolSetting showBadgesChatterino = {"/appearance/badges/chatterino", true};
+    BoolSetting showBadgesSeventv = {"/appearance/badges/seventv", true};
     BoolSetting showBadgesFfz = {"/appearance/badges/ffz", true};
     BoolSetting useCustomFfzModeratorBadges = {
         "/appearance/badges/useCustomFfzModeratorBadges", true};
@@ -171,6 +172,8 @@ public:
         "/behaviour/autocompletion/userCompletionOnlyWithAt", false};
     BoolSetting emoteCompletionWithColon = {
         "/behaviour/autocompletion/emoteCompletionWithColon", true};
+    BoolSetting showUsernameCompletionMenu = {
+        "/behaviour/autocompletion/showUsernameCompletionMenu", true};
 
     FloatSetting pauseOnHoverDuration = {"/behaviour/pauseOnHoverDuration", 0};
     EnumSetting<Qt::KeyboardModifier> pauseChatModifier = {
